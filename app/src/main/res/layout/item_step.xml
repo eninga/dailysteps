@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    card_view:cardCornerRadius="4dp">
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/steps"
+                android:layout_gravity="start"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="50sp" />
+            <ImageButton
+                android:id="@+id/share"
+                android:contentDescription="@string/share"
+                android:layout_gravity="end"
+                android:tint="@color/red"
+                android:background="@android:color/white"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:baselineAlignBottom="true"
+                android:src="@drawable/ic_menu_share" />
+
+        </FrameLayout>
+        <TextView
+            android:id="@+id/percent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+
