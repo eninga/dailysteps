@@ -57,7 +57,6 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> 
         }
     }
     class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         TextView name, status;
         ViewHolder(View v) {
             super(v);
