@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import edb.eningabiye.dailysteps.ShareStepsActivity;
+import edb.eningabiye.dailysteps.networking.Server;
 
 /**
  * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
@@ -49,11 +50,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 peers.addAll(refreshedPeers);
                 mActivity.getListAdapter().notifyDataSetChanged();
                 for (WifiP2pDevice device : peers) {
-                    Log.e("deviceName", device.deviceName+"");
-                    Toast.makeText(mActivity, device.deviceName+"", Toast.LENGTH_SHORT).show();
-                    Log.e("deviceAddress", device.deviceAddress+"");;
-                    //Log.e("primaryDeviceType", device.primaryDeviceType+"");;
-                    //Log.e("secondaryDeviceType", device.secondaryDeviceType+"");;
+                    Log.e("________deviceName", device.deviceName+"");
                 }
                 // If an AdapterView is backed by this data, notify it
                 // of the change. For instance, if you have a ListView of
@@ -72,11 +69,13 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
             WiFiDirectBroadcastReceiver.this.info = wifiP2pInfo;
-            Toast.makeText(mActivity, "WIFi INFO: "+wifiP2pInfo.toString(), Toast.LENGTH_SHORT).show();
+            Log.e("________Wifi info______", wifiP2pInfo.toString());
+            //new Server(mActivity).execute();
             if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner) {
-                Toast.makeText(mActivity, "Group owner and formed =>"+wifiP2pInfo.groupOwnerAddress.getHostAddress(), Toast.LENGTH_LONG).show();
+                new Server(mActivity).execute();
+                Log.e("________g_Owner ___", wifiP2pInfo.groupOwnerAddress.getHostAddress());
             } else if (wifiP2pInfo.groupFormed) {
-                Toast.makeText(mActivity, "Group formed: "+wifiP2pInfo.toString(), Toast.LENGTH_LONG).show();
+                Log.e("______Not g owner ___", wifiP2pInfo.groupOwnerAddress.getHostAddress());
             }
         }
     };
@@ -89,7 +88,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 //Toast.makeText(context, "WIFI P2P OK", Toast.LENGTH_LONG).show();
                 //Log.e("wifi", "OK");
             } else {
-                Toast.makeText(context, "WIFI P2P KOOOO", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "WIFI P2P KOOOO", Toast.LENGTH_LONG).show();
                 //Log.e("wifi", "KO");
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {

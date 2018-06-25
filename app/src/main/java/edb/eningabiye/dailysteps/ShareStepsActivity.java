@@ -1,6 +1,7 @@
 package edb.eningabiye.dailysteps;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import edb.eningabiye.dailysteps.adapters.ShareAdapter;
+import edb.eningabiye.dailysteps.networking.Server;
 import edb.eningabiye.dailysteps.services.WiFiDirectBroadcastReceiver;
 
 public class ShareStepsActivity extends AppCompatActivity {
@@ -78,13 +81,17 @@ public class ShareStepsActivity extends AppCompatActivity {
                 //failure logic
             }
         });*/
+        Intent mainIntent = null;
+
+        if(getIntent().getAction() != null && getIntent().getAction().equals("MAIN")){
+            mainIntent =  getIntent();
+        }
         recyclerView = findViewById(R.id.devices_show);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-        listAdapter = new ShareAdapter(receiver.peers, wifiP2pManager,channel, this, receiver.getInfo());
+        listAdapter = new ShareAdapter(receiver.peers, wifiP2pManager,channel, this, receiver.getInfo(), mainIntent);
         recyclerView.setAdapter(listAdapter);
-
     }
     @Override
     protected void onResume() {
@@ -99,8 +106,23 @@ public class ShareStepsActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        super.onStop();
         unregisterReceiver(receiver);
+        if (wifiP2pManager != null && channel != null) {
+            wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
+
+                @Override
+                public void onFailure(int reasonCode) {
+                    Log.d("Disconnect____", "Disconnect failed. Reason :" + reasonCode);
+                }
+
+                @Override
+                public void onSuccess() {
+                    Log.d("Disconnect____", "Disconnect succes.");
+                }
+
+            });
+        }
+        super.onStop();
     }
 
     public ShareAdapter getListAdapter() {

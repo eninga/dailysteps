@@ -5,11 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/moyenne"
-            android:title="@string/moyenne" />
+            android:id="@+id/user"
+            android:title="@string/change_user" />
         <item
-            android:id="@+id/mensuel"
-            android:title="@string/mensuel" />
+            android:id="@+id/message_shared"
+            android:title="@string/message_shared" />
+        <item
+            android:id="@+id/total"
+            android:title="@string/total_mensuel" />
+        <item
+            android:id="@+id/moyenne"
+            android:title="@string/moy_mensuel" />
         <item
             android:id="@+id/min"
             android:title="@string/minimum" />
@@ -17,6 +23,5 @@
             android:id="@+id/max"
             android:title="@string/maximum" />
     </group>
-
 
 </menu>

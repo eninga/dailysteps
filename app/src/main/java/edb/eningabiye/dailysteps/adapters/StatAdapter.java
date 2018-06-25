@@ -1,7 +1,7 @@
-package edb.eningabiye.dailysteps;
+package edb.eningabiye.dailysteps.adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,29 +12,30 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import edb.eningabiye.dailysteps.R;
 import edb.eningabiye.dailysteps.model.Step;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+public class StatAdapter extends RecyclerView.Adapter<StatAdapter.ViewHolder> {
     private ArrayList<Step> data;
     Context context;
-    ListAdapter(ArrayList<Step> myDataset, Context context) {
+    public StatAdapter(ArrayList<Step> myDataset, Context context) {
         this.context = context;
         this.data = myDataset;
     }
 
     @NonNull
     @Override
-    public ListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // create a new view
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_step, parent, false);
         return new ViewHolder(root);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Step step = data.get(position);
-        holder.username.setText(step.getUser().toString());
-        holder.date.setText(String.valueOf(step.getDate()));
+        SharedPreferences sharedPref = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        holder.username.setText(sharedPref.getString("username", null));
+        holder.date.setText(String.valueOf(step.getMonth()+" "+step.getYear()));
         holder.steps.setText(String.valueOf(step.getSteps()));
         if(step.getPercent() >= 0){
             holder.percent.setTextColor(context.getResources().getColor(R.color.green));
@@ -50,7 +51,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         TextView username, date, steps, percent;
         ImageButton imageButton;
         ViewHolder(View v) {
@@ -60,18 +60,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             steps = v.findViewById(R.id.steps);
             percent = v.findViewById(R.id.percent);
             imageButton = v.findViewById(R.id.share);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(context, ShareStepsActivity.class);
-                    i.putExtra("name",data.get(getLayoutPosition()).getUser().getName());
-                    i.putExtra("date",data.get(getLayoutPosition()).getDate());
-                    i.putExtra("steps",data.get(getLayoutPosition()).getSteps());
-                    context.startActivity(i);
-                }
-            });
         }
 
     }
-
 }

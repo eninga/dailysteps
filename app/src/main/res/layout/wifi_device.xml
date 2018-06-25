@@ -19,5 +19,24 @@
             android:id="@+id/d_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:visibility="gone"
+                android:id="@+id/connect"
+                android:text="@string/connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Button
+                android:visibility="gone"
+                android:id="@+id/send"
+                android:text="@string/envoyer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -24,17 +24,10 @@ public class ServerService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
     }
 
     @Override
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
-        try {
-            Server server = new Server(this);
-            server.launch();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

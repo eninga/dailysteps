@@ -13,26 +13,19 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-public class Client {
+public class Client extends AsyncTask<String, Void, String>{
     private SocketChannel socket;
-    Charset charset;
-    String result;
-    public Client(){
-
-    }
-
-    public String getUnboundedResponse(String ...params) throws IOException {
-        new Connbect().execute(params[0],params[1],params[2]);
-        return result;
-    }
+    private Charset charset;
+    private String result;
 
     private void silentlyClose(SocketChannel socketChannel) {
-        if (socketChannel != null)
+        if (socketChannel != null) {
             try {
                 socketChannel.close();
             } catch (IOException e) {
                 // Ignore
             }
+        }
 
     }
 
@@ -47,40 +40,40 @@ public class Client {
         buffer.flip();
         return nb != -1;
     }
+    @Override
+    public void onPreExecute(){
+        Log.e("******cli*********", "cliznt start");
+    }
+    @Override
+    protected String doInBackground(String... strings) {
+        charset = Charset.forName("UTF-8");
+        ByteBuffer buffer;
+        Log.e("******try*******", "go try");
 
-    class Connbect extends AsyncTask<String, Void, String> {
-        protected String doInBackground(String... strings) {
-            Log.e("***************", "start");
-            charset = Charset.forName("UTF-8");
-            Log.e("****ch**********", "charset");
-            ArrayList<ByteBuffer> ListBuffer = new ArrayList<>();
-            Log.e("*******bu*******", "listbuffer");
-            ByteBuffer buffer=null;
-            Log.e("******try*******", "go try");
-
-            try {
-                socket = SocketChannel.open();
-                socket.connect(new InetSocketAddress(strings[1],Integer.valueOf(strings[2])));
-                socket.write(charset.encode(strings[0]));
-                buffer = ByteBuffer.allocate(1024);
-                Log.e("*****0*connected*******", "done");
-                socket.read(buffer);//todo exception raised here
-                buffer.flip();
-            } catch (IOException e) {
-                Log.e("**catch*******", "done "+e.getMessage());
-            }
-            Log.e("*****0********", "end");
-            result = null != buffer ? String.valueOf(Charset.defaultCharset().decode(buffer)):null;
-            if(result!= null) {
-                Log.e("SUPPPERRRRR------", result);
-            }
-            return result;
+        try {
+            socket = SocketChannel.open();
+            String ridge = "192.168.43.97";
+            String feel = "192.168.43.47";
+            socket.connect(new InetSocketAddress(ridge,Integer.valueOf(strings[2])));
+            socket.write(charset.encode(strings[0]));
+            buffer = ByteBuffer.allocate(1024);
+            Log.e("cli_connected*******", "done");
+            socket.read(buffer);//todo exception raised here
+            buffer.flip();
+            result = String.valueOf(charset.decode(buffer));
+        } catch (IOException e) {
+            Log.e("**catch*******", "done "+e.getMessage());
         }
 
-        protected void onPostExecute(String res) {
-            //Log.e("*******+-*/*******", res);
-            result = res;
+        if(result!= null) {
+            Log.e("---retour serveur-----:", result);
         }
-
+        return result;
+    }
+    @Override
+    protected void onPostExecute(String res) {
+        //Log.e("*******+-*/*******", res);
+        result = res;
+        silentlyClose(socket);
     }
 }

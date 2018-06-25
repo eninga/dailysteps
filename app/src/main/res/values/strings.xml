@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Daily Steps</string>
-    <string name="nav_header_subtitle">Memoire Eric NINGABIYE</string>
+    <string name="nav_header_subtitle">Travail de M. Eric NINGABIYE</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_share_steps">Destinataires WIFI</string>
@@ -17,5 +17,12 @@
     <string name="moyenne">Moyenne</string>
     <string name="minimum">Minimum mensuel</string>
     <string name="maximum">Maximum Mensuel</string>
-    <string name="mensuel">Mensuel Mensuel</string>
+    <string name="moy_mensuel">Moyenne Mensuelle</string>
+    <string name="total_mensuel">Total Mensuel</string>
+    <string name="envoyer">Envoyer</string>
+    <string name="connect">Connecter</string>
+    <string name="title_activity_messages">Messages</string>
+    <string name="message_shared">Messages reçus</string>
+    <string name="change_user">Changer d\'utilisateur</string>
+    <string name="title_activity_stat">Stats</string>
 </resources>

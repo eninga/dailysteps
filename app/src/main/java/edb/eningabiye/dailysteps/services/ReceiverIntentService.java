@@ -76,7 +76,7 @@ public class ReceiverIntentService extends IntentService
     public void step(long timeNs) {
         //numSteps++;
         try {
-            db.saveStep(1, new User("Eric", "000"));
+            db.saveStep(1);
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }

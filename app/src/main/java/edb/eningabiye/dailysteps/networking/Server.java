@@ -1,12 +1,10 @@
 package edb.eningabiye.dailysteps.networking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,15 +12,14 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+
+import edb.eningabiye.dailysteps.services.NotifyService;
 
 public class Server  extends  AsyncTask<String, Void, String>{
     private ServerSocketChannel server;
     private Charset charset;
-    Context context;
-    public Server(Context ctxt) throws IOException {
-        context= ctxt;
-    }
+    private Context context;
+
     public static void writeResponse(SocketChannel sc, String response)
             throws IOException {
         ByteBuffer buff = ByteBuffer.allocate(response.getBytes().length);
@@ -30,35 +27,40 @@ public class Server  extends  AsyncTask<String, Void, String>{
         buff.flip();
         sc.write(buff);
     }
-    public void launch() {
-
+    public Server(Context context) {
+        super();
+        this.context = context;
     }
 
     protected String doInBackground(String... strings) {
         charset = Charset.forName("UTF-8");
-        ByteBuffer buffer=null;
+        ByteBuffer buffer;
         SocketChannel client =null;
         try {
             server = ServerSocketChannel.open();
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N /*24*/) {
                 server.bind(new InetSocketAddress(7777));
+                Log.e("___________bound__"," bound on "+ server.socket().getLocalSocketAddress());
             }else{
                 server.socket().bind(new InetSocketAddress(7777));
                 Log.e("___________bound__"," bound on "+ server.socket().getLocalSocketAddress());
 
             }
-            new Handler(Looper.getMainLooper()).post(()->{
-                Toast.makeText(context,this.getClass().getName() + " bound on "+ server.socket().getLocalSocketAddress(), Toast.LENGTH_LONG).show();;
-            });
-            //while (true) {
-            Log.e("Connection accepted fr ",  "go accept");
-
-            client = server.accept();
-            //Toast.makeText(context,"Connection accepted from " + client.socket().getInetAddress().getHostAddress(), Toast.LENGTH_LONG).show();;
-
-            Log.e("Connection accepted fr ",  client.socket().getInetAddress().getHostAddress());
-            serve(client);
-            // }
+            while (true) {
+                Log.e("______________________",  "going to accept");
+                client = server.accept();
+                Log.e("____accepted________ ",  client.socket().getInetAddress().getHostAddress());
+                buffer = ByteBuffer.allocate(512);
+                client.read(buffer);
+                buffer.flip();
+                String msg = charset.decode(buffer).toString();
+                Intent intent = new Intent(context, NotifyService.class);
+                intent.setAction("NOTIFY");
+                intent.putExtra("msg",msg);
+                context.startService(intent);
+                Log.e("__________Data______",  msg);
+                client.write(charset.encode("OK sent!"));
+            }
         } catch (IOException ioe) {
             Log.e("____error_","I/O Error while communicating with client..."+ioe.getMessage());
 
@@ -90,6 +92,5 @@ public class Server  extends  AsyncTask<String, Void, String>{
             }
         }
     }
-
 
 }

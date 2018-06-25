@@ -8,4 +8,5 @@
 /build
 /captures
 .externalNativeBuild
-/app/src/*test
+/app/src/*est
+.*

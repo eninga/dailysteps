@@ -6,8 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,7 +24,6 @@ import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Dictionary;
 import com.couchbase.lite.Result;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,8 +32,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
+import edb.eningabiye.dailysteps.adapters.ListAdapter;
 import edb.eningabiye.dailysteps.model.Step;
-import edb.eningabiye.dailysteps.networking.Server;
 import edb.eningabiye.dailysteps.services.ServerService;
 import edb.eningabiye.dailysteps.services.StepDetector;
 import edb.eningabiye.dailysteps.database.CouchData;
@@ -61,8 +58,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         textView = findViewById(R.id.pas);
-        Intent i = new Intent(this, ServerService.class);
-        startService(i);
+        // Intent i = new Intent(this, ServerService.class);
+        //  startService(i);
         try {
             db = new CouchData(this);
         } catch (CouchbaseLiteException e) {
@@ -155,23 +152,36 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.moyenne) {
-            // Handle the camera action
+        if (id == R.id.message_shared) {
+            startActivity(new Intent(this, Messages.class));
         }
-       /* else if (id == R.id.mensuel) {
-            } else if (id == R.id.nav_slideshow) {
+        else if (id == R.id.total) {
+            startStatActivity("total");
+        } else if (id == R.id.moyenne) {
+            startStatActivity("moyenne");
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.min) {
+            startStatActivity("min");
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.max) {
+            startStatActivity("max");
 
-        } else if (id == R.id.nav_send) {
-
-        }*/
+        } else if (id == R.id.user) {
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setAction("CHANGE_USER");
+            startActivity(intent);
+            finish();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public void startStatActivity(String type){
+        Intent intent = new Intent(this, StatActivity.class);
+        intent.putExtra("type", type);
+        startActivity(intent);
+
     }
 
     @Override
@@ -209,7 +219,7 @@ public class MainActivity extends AppCompatActivity
     public void step(long timeNs) {
         numSteps++;
         try {
-            db.saveStep(1, new User("Eric", "000"));
+            db.saveStep(1);
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
