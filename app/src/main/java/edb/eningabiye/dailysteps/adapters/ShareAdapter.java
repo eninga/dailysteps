@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import edb.eningabiye.dailysteps.R;
+import edb.eningabiye.dailysteps.model.MyWifi;
 import edb.eningabiye.dailysteps.networking.Client;
 import edb.eningabiye.dailysteps.services.ClientService;
 
@@ -86,28 +87,17 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> 
                 config.deviceAddress = device.deviceAddress;
                 config.wps.setup = WpsInfo.PBC;
                 config.groupOwnerIntent = 0;
-                    /*try {
-                        Client client = new Client();
-                        //rig fab 192.168.43.97, fe80::826a:b0ff:fee7:b465
-                        String s =client.getUnboundedResponse("Bonjour !","192.168.43.97","7777");
-                        Toast.makeText(context, "'''''''''''  "+s+"   "+"192.168.43.97", Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
                 wifiP2pManager.connect(channel, config, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(context, "Connect connected.", Toast.LENGTH_SHORT).show();
-                        Log.e("-----------","wifi connected");
-                        Log.e("Adress: ", (null!=info ? info.groupOwnerAddress.getHostAddress():" ____"));
-
-                        if (send.getVisibility() == View.GONE) {
+                        Toast.makeText(context, "Connexion établie.", Toast.LENGTH_SHORT).show();
+                        if (device.status != WifiP2pDevice.CONNECTED) {
                             send.setVisibility(View.VISIBLE);
                         }
                     }
                     @Override
                     public void onFailure(int reason) {
-                        Toast.makeText(context, "Connect failed. Retry.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Connexion echouée, réessayez!", Toast.LENGTH_SHORT).show();
                         Log.e("-----------","Connect failed. Retry.");
 
                     }
@@ -117,11 +107,11 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> 
             send.setOnClickListener(view->{
                 Intent intent = new Intent(context, ClientService.class);
                 intent.setAction("SEND");
-                //intent.putExtra("host", info.groupOwnerAddress.getHostAddress());
                 intent.putExtra("message", mainIntent.getStringExtra("message"));
                 intent.putExtra("steps", String.valueOf(mainIntent.getIntExtra("steps",0)));
                 intent.putExtra("nom", mainIntent.getStringExtra("name"));
                 context.startService(intent);
+                send.setVisibility(View.GONE);
             });
         }
     }

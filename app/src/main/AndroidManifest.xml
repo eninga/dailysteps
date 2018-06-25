@@ -31,10 +31,6 @@
             android:label="@string/title_activity_share_steps"
             android:theme="@style/AppTheme" />
 
-        <service
-            android:name=".services.ReceiverIntentService"
-            android:exported="false" />
-
         <activity
             android:name=".HomeActivity"
             android:label="@string/app_name"
@@ -53,6 +49,7 @@
         <activity
             android:name=".Messages"
             android:label="@string/title_activity_messages"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
 
         <service
@@ -65,7 +62,7 @@
         <activity
             android:name=".StatActivity"
             android:label="@string/title_activity_stat"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

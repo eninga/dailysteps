@@ -76,11 +76,12 @@ public class CouchData {
     }
     public void saveMessages(String nom, String steps, String msg){
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy H:m:s", Locale.FRENCH);
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy H:mm:ss", Locale.FRENCH);
         String formattedDate = df.format(c);
 
         MutableDocument mutableDoc = new MutableDocument(formattedDate);
         mutableDoc.setString("nom", nom)
+                .setLong("uid", System.currentTimeMillis())
                 .setString("steps", steps)
                 .setString("date", formattedDate)
                 .setString("message", msg);
@@ -93,7 +94,7 @@ public class CouchData {
     public ResultSet getMessages() {
         Query query = QueryBuilder.select(SelectResult.all())
                 .from(DataSource.database(database_message))
-                .orderBy(Ordering.property("date").descending());
+                .orderBy(Ordering.property("uid").descending());
         try {
             return query.execute();
         } catch (CouchbaseLiteException e) {

@@ -17,17 +17,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import edb.eningabiye.dailysteps.adapters.ShareAdapter;
-import edb.eningabiye.dailysteps.networking.Server;
 import edb.eningabiye.dailysteps.services.WiFiDirectBroadcastReceiver;
 
 public class ShareStepsActivity extends AppCompatActivity {
     private ArrayList<WifiP2pDevice> list = new ArrayList<>();
 
-
     private ShareAdapter listAdapter;
     private RecyclerView recyclerView;
-
-    public static final long JOUR = 86400000;
     private WifiP2pManager wifiP2pManager;
     private WifiP2pManager.Channel channel;
     private IntentFilter mIntentFilter;
@@ -57,30 +53,14 @@ public class ShareStepsActivity extends AppCompatActivity {
         wifiP2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(ShareStepsActivity.this, "Discover succes", Toast.LENGTH_LONG).show();
                 //Log.e("Discover", " succes");
             }
             @Override
             public void onFailure(int reasonCode) {
-                Toast.makeText(ShareStepsActivity.this, "reasonCode"+reasonCode, Toast.LENGTH_LONG).show();
+                Toast.makeText(ShareStepsActivity.this, "Problème de connexion", Toast.LENGTH_LONG).show();
                 Log.e("Discover not", ""+reasonCode);
             }
         });
-        /*WifiP2pDevice device;
-        WifiP2pConfig config = new WifiP2pConfig();
-        config.deviceAddress = device.deviceAddress;
-        wifiP2pManager.connect(channel, config, new WifiP2pManager.ActionListener() {
-
-            @Override
-            public void onSuccess() {
-                //success logic
-            }
-
-            @Override
-            public void onFailure(int reason) {sensor
-                //failure logic
-            }
-        });*/
         Intent mainIntent = null;
 
         if(getIntent().getAction() != null && getIntent().getAction().equals("MAIN")){
@@ -100,29 +80,32 @@ public class ShareStepsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        registerReceiver(receiver, mIntentFilter);
+        super.onStart();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
     }
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         unregisterReceiver(receiver);
         if (wifiP2pManager != null && channel != null) {
             wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
 
                 @Override
                 public void onFailure(int reasonCode) {
-                    Log.d("Disconnect____", "Disconnect failed. Reason :" + reasonCode);
                 }
 
                 @Override
                 public void onSuccess() {
-                    Log.d("Disconnect____", "Disconnect succes.");
                 }
-
             });
         }
-        super.onStop();
+        super.onDestroy();
     }
 
     public ShareAdapter getListAdapter() {

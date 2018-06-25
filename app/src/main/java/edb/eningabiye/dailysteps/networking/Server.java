@@ -40,16 +40,11 @@ public class Server  extends  AsyncTask<String, Void, String>{
             server = ServerSocketChannel.open();
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N /*24*/) {
                 server.bind(new InetSocketAddress(7777));
-                Log.e("___________bound__"," bound on "+ server.socket().getLocalSocketAddress());
             }else{
                 server.socket().bind(new InetSocketAddress(7777));
-                Log.e("___________bound__"," bound on "+ server.socket().getLocalSocketAddress());
-
             }
             while (true) {
-                Log.e("______________________",  "going to accept");
                 client = server.accept();
-                Log.e("____accepted________ ",  client.socket().getInetAddress().getHostAddress());
                 buffer = ByteBuffer.allocate(512);
                 client.read(buffer);
                 buffer.flip();
@@ -58,11 +53,10 @@ public class Server  extends  AsyncTask<String, Void, String>{
                 intent.setAction("NOTIFY");
                 intent.putExtra("msg",msg);
                 context.startService(intent);
-                Log.e("__________Data______",  msg);
-                client.write(charset.encode("OK sent!"));
+                client.write(charset.encode("Message reçu!"));
             }
         } catch (IOException ioe) {
-            Log.e("____error_","I/O Error while communicating with client..."+ioe.getMessage());
+            Log.e("____error_",ioe.getMessage());
 
         }  finally {
             silentlyClose(client);
@@ -72,7 +66,6 @@ public class Server  extends  AsyncTask<String, Void, String>{
     }
 
     protected void onPostExecute(String res) {
-        Log.e("*******+-*/*******", "oki");
     }
 
 

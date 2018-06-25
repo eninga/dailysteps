@@ -9,12 +9,12 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import edb.eningabiye.dailysteps.ShareStepsActivity;
+import edb.eningabiye.dailysteps.model.MyWifi;
 import edb.eningabiye.dailysteps.networking.Server;
 
 /**
@@ -52,12 +52,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 for (WifiP2pDevice device : peers) {
                     Log.e("________deviceName", device.deviceName+"");
                 }
-                // If an AdapterView is backed by this data, notify it
-                // of the change. For instance, if you have a ListView of
-                // available peers, trigger an update.
-                //((WiFiPeerListAdapter) getListAdapter()).notifyDataSetChanged();
-                // Perform any other updates needed based on the new list of
-                // peers connected to the Wi-Fi P2P network.
             }
 
             if (peers.size() == 0) {
@@ -71,12 +65,14 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             WiFiDirectBroadcastReceiver.this.info = wifiP2pInfo;
             Log.e("________Wifi info______", wifiP2pInfo.toString());
             //new Server(mActivity).execute();
+            MyWifi.ip_group = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner) {
                 new Server(mActivity).execute();
                 Log.e("________g_Owner ___", wifiP2pInfo.groupOwnerAddress.getHostAddress());
             } else if (wifiP2pInfo.groupFormed) {
                 Log.e("______Not g owner ___", wifiP2pInfo.groupOwnerAddress.getHostAddress());
             }
+
         }
     };
     @Override
@@ -85,36 +81,22 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                //Toast.makeText(context, "WIFI P2P OK", Toast.LENGTH_LONG).show();
-                //Log.e("wifi", "OK");
             } else {
-                //Toast.makeText(context, "WIFI P2P KOOOO", Toast.LENGTH_LONG).show();
-                //Log.e("wifi", "KO");
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-            //WifiP2pManager.requestPeers();
-            //Log.e("P2P_PEERS", "WifiP2pManager.requestPeers()");
             if (mManager != null) {
                 mManager.requestPeers(mChannel, peerListListener);
             }
-            //Log.e("P2P_PEERS", "P2P peers changed");
 
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            // Respond to new connection or disconnections
-            //Log.e("P2P_CONNECTION", "Respond to new connection or disconnections");
             if (mManager == null) {
                 return;
             }
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
-                // We are connected with the other device, request connection
-                // info to find group owner IP
                 mManager.requestConnectionInfo(mChannel, connectionInfoListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-            // Respond to this device's wifi state changing
-            //Log.e("P2P_THIS_DEVICE", "Respond to this device's wifi state changing");
-
         }
     }
 }

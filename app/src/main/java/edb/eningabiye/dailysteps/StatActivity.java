@@ -47,9 +47,6 @@ public class StatActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Intent intent=getIntent();
         RecyclerView recyclerView = findViewById(R.id.datashow_stat);
-        Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.FRENCH);
-        String formattedDate = df.format(c);
         try {
             db = new CouchData(this);
             String title = setTitle(intent);
@@ -57,11 +54,6 @@ public class StatActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle(title);
             }
             for (Result result : resultSet) {
-                Log.e("______0_____",result.getInt("$0")+"");
-                Log.e("______1_____",result.getInt("$1")+"");
-                Log.e("_______2____",result.getInt("$2")+"");
-                Log.e("________3___",result.getInt("$3")+"");
-                //numSteps = db.getSteps().next().getDictionary(CouchData.DATABASE_NAME).getInt("steps");
                 Step step = new Step(result.getString("date"),result.getInt("$1"),list.size()>0?list.get(list.size()-1).getSteps():0,result.getString("month"), result.getString("year"));
                 list.add(step);
             }

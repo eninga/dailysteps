@@ -1,6 +1,8 @@
 package edb.eningabiye.dailysteps.services;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
@@ -8,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.couchbase.lite.CouchbaseLiteException;
 
+import edb.eningabiye.dailysteps.Messages;
 import edb.eningabiye.dailysteps.R;
 import edb.eningabiye.dailysteps.database.CouchData;
 
@@ -32,12 +35,20 @@ public class NotifyService extends IntentService {
         }
     }
     public void notification(String nom, String steps, String msg){
+        Intent intent = new Intent(this, Messages.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(intent);
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_NO_CREATE);
+        //PendingIntent.getActivity(this, 0, intent, 0);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "1020")
                 .setSmallIcon(R.drawable.baseline_directions_walk_white_18)
                 .setContentTitle(nom)
                 .setContentText(msg)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(msg+" ... "+steps))
+                //.setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(0, mBuilder.build());
